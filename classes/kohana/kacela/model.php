@@ -41,7 +41,7 @@ abstract class Kohana_Kacela_Model extends M\Model
 
 	protected function _formo_field($field, $data, $value)
 	{
-			$array = array('alias' => $field, 'value' => $value, 'driver' => 'input');
+			$array = array('alias' => $field, 'val' => $value, 'driver' => 'input');
 
 			switch ($data->type)
 			{
@@ -50,13 +50,13 @@ abstract class Kohana_Kacela_Model extends M\Model
 					array_walk($keys, function(&$k) { $k = ucfirst($k); });
 
 					$array['driver'] = 'select';
-					$array['options'] = array_combine($data->values, $keys);
+					$array['opts'] = array_combine($data->values, $keys);
 					break;
 				case 'bool':
-					$array['driver'] = 'bool';
+					$array['driver'] = 'checkbox';
 					break;
 				case 'date':
-					$array['value'] =  \Format::date($this->$field);
+					$array['val'] =  \Format::date($this->$field);
 					$array['attr']['class'] = 'datepicker';
 					break;
 				default:
@@ -76,7 +76,7 @@ abstract class Kohana_Kacela_Model extends M\Model
 			array_walk($label, function(&$word) { $word = ucfirst($word); });
 			$array['label'] = join(' ', $label);
 
-			return \Formo::field($array);
+			return \Formo::factory($array);
 		}
 
 	protected function _get_errors()
@@ -175,7 +175,7 @@ abstract class Kohana_Kacela_Model extends M\Model
 
 		foreach ($fields as $field)
 		{
-			$form->append($this->_formo_field($field, $this->_fields[$field], $this->$field));
+			$form->add($this->_formo_field($field, $this->_fields[$field], $this->$field));
 		}
 
 		foreach ($form->as_array() as $alias => $val)
@@ -201,7 +201,7 @@ abstract class Kohana_Kacela_Model extends M\Model
 
 	public function save($data = null)
 	{
-		if($data instanceof \Formo_Form)
+		if($data instanceof \Formo)
 		{
 			$data = $data->val();
 		}
