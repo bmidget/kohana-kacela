@@ -21,19 +21,19 @@ abstract class Kohana_Kacela_Model extends M\Model
 		}
 
 		if ($field->type == 'int') {
-			$rules[] = array('digit');
+		//	$rules[] = array('digit');
 		}
 
 		if ($field->length) {
-			$rules[] = array('max_length', array(':value', $field->length));
+		//	$rules[] = array('max_length', array(':value', $field->length));
 		}
 
 		if ($field->type == 'enum') {
-			$rules[] = array('in_array', array(':value', $field->values));
+		//	$rules[] = array('in_array', array(':value', $field->values));
 		}
 
 		if ($field->type == 'date') {
-			$rules[] = array('date');
+		//	$rules[] = array('date');
 		}
 
 		return $rules;
@@ -186,7 +186,9 @@ abstract class Kohana_Kacela_Model extends M\Model
 
 				if(!empty($rules))
 				{
-					$form->rules($alias, $rules);
+					$form->add_rule(array(
+						$alias => $rules
+					));
 				}
 			}
 		}
