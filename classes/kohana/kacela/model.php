@@ -57,7 +57,7 @@ abstract class Kohana_Kacela_Model extends M\Model
 					break;
 				case 'date':
 					$array['val'] =  \Format::date($this->$field);
-					$array['attr']['class'] = 'datepicker';
+					$array['attr']['class'] = 'dateinput';
 					break;
 				default:
 					if($data->length <= 10) {
