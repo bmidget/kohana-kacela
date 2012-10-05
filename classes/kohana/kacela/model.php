@@ -172,10 +172,15 @@ abstract class Kohana_Kacela_Model extends M\Model
 	public function get_form(array $fields)
 	{
 		$form = \Formo::form();
+		$all_rules = $this->rules();
 
 		foreach ($fields as $field)
 		{
 			$form->add($this->_formo_field($field, $this->_fields[$field], $this->$field));
+			if ($rules = \Arr::get($all_rules, $field))
+			{
+				$form->add_rule(array($field => $rules));
+			}
 		}
 
 		foreach ($form->as_array() as $alias => $val)
@@ -199,7 +204,10 @@ abstract class Kohana_Kacela_Model extends M\Model
 	/**
 	 * @return array
 	 */
-	public function rules() {}
+	public function rules()
+	{
+		return array();
+	}
 
 	public function save($data = null)
 	{
