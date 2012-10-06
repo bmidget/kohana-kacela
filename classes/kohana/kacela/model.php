@@ -13,71 +13,75 @@ abstract class Kohana_Kacela_Model extends M\Model
 
 	protected function _formo_rules($field)
 	{
+		$data = $this->_fields[$field];
+
 		$rules = array();
 
-		if ($field->null === FALSE AND $field->type != 'bool') {
+		if ($data->null === FALSE AND $data->type != 'bool') {
 			// Add not_empty rule if it doesn't allow NULL
 			$rules[] = array('not_empty');
 		}
 
-		if ($field->type == 'int') {
-			$rules[] = array('digit');
+		if ($data->type == 'int') {
+		//	$rules[] = array('digit');
 		}
 
-		if ($field->length) {
-			$rules[] = array('max_length', array(':value', $field->length));
+		if ($data->length) {
+		//	$rules[] = array('max_length', array(':value', $field->length));
 		}
 
-		if ($field->type == 'enum') {
-			$rules[] = array('in_array', array(':value', $field->values));
+		if ($data->type == 'enum') {
+		//	$rules[] = array('in_array', array(':value', $field->values));
 		}
 
-		if ($field->type == 'date') {
-			$rules[] = array('date');
+		if ($data->type == 'date') {
+		//	$rules[] = array('date');
 		}
 
 		return $rules;
 	}
 
-	protected function _formo_field($field, $data, $value)
+	protected function _formo_field($field)
 	{
-			$array = array('alias' => $field, 'val' => $value, 'driver' => 'input');
+		$array = array('alias' => $field, 'val' => $this->$field, 'driver' => 'input');
 
-			switch ($data->type)
-			{
-				case 'enum':
-					$keys = $data->values;
-					array_walk($keys, function(&$k) { $k = ucfirst($k); });
+		$data = $this->_fields[$field];
 
-					$array['driver'] = 'select';
-					$array['opts'] = array_combine($data->values, $keys);
-					break;
-				case 'bool':
-					$array['driver'] = 'checkbox';
-					break;
-				case 'date':
-					$array['val'] =  \Format::date($this->$field);
-					$array['attr']['class'] = 'dateinput';
-					break;
-				default:
-					if($data->length <= 10) {
-						$class = 'small';
-					} elseif ($data->length <= 20) {
-						$class = 'med';
-					} else {
-						$class = 'big';
-					}
+		switch ($data->type)
+		{
+			case 'enum':
+				$keys = $data->values;
+				array_walk($keys, function(&$k) { $k = ucfirst($k); });
 
-					$array['attr']['class'] = $class;
-					break;
-			}
+				$array['driver'] = 'select';
+				$array['opts'] = array_combine($data->values, $keys);
+				break;
+			case 'bool':
+				$array['driver'] = 'checkbox';
+				break;
+			case 'date':
+				$array['val'] =  \Format::date($this->$field);
+				$array['attr']['class'] = 'datepicker';
+				break;
+			default:
+				if($data->length <= 10) {
+					$class = 'small';
+				} elseif ($data->length <= 20) {
+					$class = 'med';
+				} else {
+					$class = 'big';
+				}
 
-			$label = explode('_', $field);
-			array_walk($label, function(&$word) { $word = ucfirst($word); });
-			$array['label'] = join(' ', $label);
-
-			return \Formo::factory($array);
+				$array['attr']['class'] = $class;
+				break;
 		}
+
+		$label = explode('_', $field);
+		array_walk($label, function(&$word) { $word = ucfirst($word); });
+		$array['label'] = join(' ', $label);
+
+		return \Formo::factory($array);
+	}
 
 	protected function _get_errors()
 	{
@@ -172,31 +176,14 @@ abstract class Kohana_Kacela_Model extends M\Model
 	public function get_form(array $fields)
 	{
 		$form = \Formo::form();
-		$all_rules = $this->rules();
 
 		foreach ($fields as $field)
 		{
-			$form->add($this->_formo_field($field, $this->_fields[$field], $this->$field));
-			if ($rules = \Arr::get($all_rules, $field))
-			{
-				$form->add_rule(array($field => $rules));
-			}
+			$form->add($this->_formo_field($field));
+			$form->$field->add_rules($this->_formo_rules($field));
 		}
 
-		foreach ($form->as_array() as $alias => $val)
-		{
-			if ($field = \Arr::get($this->_fields, $alias))
-			{
-				$rules = $this->_formo_rules($field);
-
-				if(!empty($rules))
-				{
-					$form->add_rule(array(
-						$alias => $rules
-					));
-				}
-			}
-		}
+		$form->add_rules_fields($this->rules());
 
 		return $form;
 	}
@@ -237,7 +224,7 @@ abstract class Kohana_Kacela_Model extends M\Model
 
 		if(!empty($rules))
 		{
-			$_validation = Validation::factory($this->_data)
+			$_validation = Validation::factory( (array) $this->_data)
 				->bind(':model', $this)
 				->bind(':original_values', $this->_originalData)
 				->bind(':changed', $this->_changed);
