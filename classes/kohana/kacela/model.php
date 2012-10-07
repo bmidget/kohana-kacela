@@ -23,19 +23,19 @@ abstract class Kohana_Kacela_Model extends M\Model
 		}
 
 		if ($data->type == 'int') {
-		//	$rules[] = array('digit');
+			$rules[] = array('digit');
 		}
 
 		if ($data->length) {
-		//	$rules[] = array('max_length', array(':value', $field->length));
+			$rules[] = array('max_length', array(':value', $data->length));
 		}
 
 		if ($data->type == 'enum') {
-		//	$rules[] = array('in_array', array(':value', $field->values));
+			$rules[] = array('in_array', array(':value', $data->values));
 		}
 
 		if ($data->type == 'date') {
-		//	$rules[] = array('date');
+			$rules[] = array('date');
 		}
 
 		return $rules;
