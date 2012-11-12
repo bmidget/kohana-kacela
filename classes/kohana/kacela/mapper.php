@@ -17,7 +17,7 @@ abstract class Kohana_Kacela_Mapper extends M\Mapper
 	 */
 	protected function _collection($data)
 	{
-		return $this->_singleton()->make_collection($this, $data);
+		return $this->_kacela()->make_collection($this, $data);
 	}
 
 	/**
@@ -40,8 +40,10 @@ abstract class Kohana_Kacela_Mapper extends M\Mapper
 	{
 		if(is_null($this->_resourceName)) {
 			$class = explode('_', get_class($this));
-			$class = end($class);
-			$class = strtolower($class);
+
+			array_shift($class);
+
+			$class = strtolower(join('_', $class));
 
 			$this->_resourceName = $this->_pluralize($class);
 		}
@@ -58,6 +60,12 @@ abstract class Kohana_Kacela_Mapper extends M\Mapper
 		return Inflector::plural($string);
 	}
 
+	/**
+	 * @param $query
+	 * @param null $args
+	 * @param Gacela\DataSource\Resource $resource
+	 * @return PDOStatement
+	 */
 	protected function _runQuery($query, $args = null, \Gacela\DataSource\Resource $resource = null)
 	{
 		$token = $this->_start_profile();
@@ -65,14 +73,6 @@ abstract class Kohana_Kacela_Mapper extends M\Mapper
 		$this->_stop_profile($token);
 
 		return $return;
-	}
-
-	/**
-	 * @return Kacela
-	 */
-	protected function _singleton()
-	{
-		return \kacela::instance();
 	}
 
 	/**
@@ -112,6 +112,19 @@ abstract class Kohana_Kacela_Mapper extends M\Mapper
 				\Profiler::set_name($token, \Kacela::debug($last, true));
 			}
 		}
+	}
+
+	/**
+	 * @return Kacela
+	 */
+	protected function _kacela()
+	{
+		return Kacela::instance();
+	}
+
+	protected function _source()
+	{
+		return $this->_kacela()->get_datasource($this->_source);
 	}
 
 	public function count($query = null)
