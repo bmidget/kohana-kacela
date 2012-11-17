@@ -17,16 +17,21 @@ if(is_dir(APPPATH . 'config/kacela'))
 	$kacela->configPath(APPPATH . 'config/kacela');
 }
 
-foreach($config['datasources'] as $name => $config)
+foreach($config->get('datasources') as $name => $source)
 {
-	$config['name'] = $name;
+	$source['name'] = $name;
 
-	$source = Kacela::createDataSource($config);
+	$source = Kacela::createDataSource($source);
 
 	$kacela->register_datasource($source);
 }
 
-if(isset($config['cache_schema']) OR isset($config['cache_data']))
+if(($cache = $config->get('cache')) !== false)
 {
-	$kacela->enable_cache(Cache::instance(), \Arr::get($config, 'cache_schema', true), \Arr::get($config, 'cache_data', false));
+	if(is_bool($cache))
+	{
+		$cache = null;
+	}
+
+	$kacela->enable_cache(Cache::instance($cache));
 }
