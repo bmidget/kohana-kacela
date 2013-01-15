@@ -32,7 +32,7 @@ With a relational database, we would create two tables, one to hold the basic in
 'aliases' table
 
 | id | alias                |
---------------------------: |
+|----|----------------------|
 | 2  | Sweetcheeks McGee    |
 | 2  | Cryin' McGee         |
 | 2  | Hot Dog              |
