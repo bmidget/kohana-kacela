@@ -20,6 +20,11 @@ abstract class Kohana_Kacela_Mapper extends M\Mapper
 		return $this->_kacela()->make_collection($this, $data);
 	}
 
+	protected function _get_query(Kacela_Criteria $criteria = null)
+	{
+		return $this->_getQuery($criteria);
+	}
+
 	/**
 	 * @return Kacela_Mapper
 	 */
@@ -66,13 +71,18 @@ abstract class Kohana_Kacela_Mapper extends M\Mapper
 	 * @param Gacela\DataSource\Resource $resource
 	 * @return PDOStatement
 	 */
-	protected function _runQuery($query, $args = null, \Gacela\DataSource\Resource $resource = null)
+	protected function _runQuery($query, $args = null, Kacela_DataSource_Resource $resource = null)
 	{
 		$token = $this->_start_profile();
 		$return = parent::_runQuery($query, $args, $resource);
 		$this->_stop_profile($token);
 
 		return $return;
+	}
+
+	protected function _run_query($query, $args = null, Kacela_DataSource_Resource $resource = null)
+	{
+		return $this->_runQuery($query, $args, $resource);
 	}
 
 	/**
@@ -162,7 +172,7 @@ abstract class Kohana_Kacela_Mapper extends M\Mapper
 		return $return;
 	}
 
-	public function find_all(\Gacela\Criteria $criteria = null)
+	public function find_all(Kacela_Criteria $criteria = null)
 	{
 		$token = $this->_start_profile();
 		$return = parent::findAll($criteria);

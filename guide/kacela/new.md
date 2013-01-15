@@ -328,7 +328,49 @@ class Mapper_User extends Kacela_Mapper
 
 Sometimes, it is desirable to pass data to the model that is not strictly represented in the underlying table for a specific model.
 
+In this instance, lets assume that we want to return a comma-delimited list of aliases as part of the main user record.
 
+```php
 
+/**
+ * Kacela
+**/
+class Mapper_User extends Kacela_Mapper
+{
+	public function find($id)
+	{
+		$criteria = Kacela::criteria()->equals('id', $id);
 
+		$rs = $this->_run_query($this->_base($criteria))->fetch();
 
+		if(!$rs)
+		{
+			$rs = new \stdClass;
+		}
+
+		return $this->_load($rs);
+	}
+
+	public function find_all(Kacela_Criteria $criteria = null)
+	{
+		/**
+		 * Returns an instance Kacela_Collection_Statement
+		**/
+		return $this->_run_query($this->_base($criteria));
+	}
+
+	/**
+	 * Allows for a unifying method of fetching the custom data set for find() and find_all()
+	**/
+	protected function _base(Kacela_Criteria $criteria = null)
+	{
+		$sub = $this->_get_query()
+			->from('aliases', array('user_id' => 'id', 'aliases' => "GROUP_CONCAT(alias)")
+			->groupBy('id');
+
+		return $this->_get_query($criteria)
+			->from('users')
+			->join(array('a' => $sub), 'users.id = a.user_id', array('aliases));
+	}
+}
+```
