@@ -9,8 +9,8 @@ When calling you'll need to know what other names they might be known as so you 
 Storing the data in a hierarchal format with XML is fairly straightforward. Each 'local' is represented by a node named 'local' with a child 'aliases' node to contain the local's aliases.
 ```xml
 <xml version="1.0>
-	<local id="1" name="Bobby Mcintire" email="bobby@kacela.com" phone="1234567891" />
-	<local id="2" name="Frankfurt McGee" email="sweetcheeks@kacela.com" phone="9876543214">
+	<user id="1" name="Bobby Mcintire" email="bobby@kacela.com" phone="1234567891" />
+	<user id="2" name="Frankfurt McGee" email="sweetcheeks@kacela.com" phone="9876543214">
 		<aliases>
 			<alias>Sweetcheeks McGee</alias>
 			<alias>Cryin' McGee</alias>
@@ -22,26 +22,26 @@ Storing the data in a hierarchal format with XML is fairly straightforward. Each
 
 With a relational database, we would create two tables, one to hold the basic information about each local, and a table to hold their aliases.
 
-'locals' table
+'users' table
 
-id  | name           | email                    | phone
---------------------------------------------------------
-1  | Bobby Mcintire  | bobby@kacela.com               | 1234567891
-2  | Frankfurt McGee | sweetcheeks@kacela.com         | 9876543214
+| id  | name           | email                    | phone        |
+|-----|----------------|--------------------------|--------------|
+| 1  | Bobby Mcintire  | bobby@kacela.com         | 1234567891   |
+| 2  | Frankfurt McGee | sweetcheeks@kacela.com   | 9876543214   |
 
 'aliases' table
 
-id | alias
-----------
-2  | Sweetcheeks McGee
-2  | Cryin' McGee
-2  | Hot Dog
+| id | alias                |
+--------------------------: |
+| 2  | Sweetcheeks McGee    |
+| 2  | Cryin' McGee         |
+| 2  | Hot Dog              |
 
 
 The same data in PHP would be stored in classes like so:
 
 ```php
-class Local {
+class User {
 
 	protected $data = array(
 		'id' => 1,
@@ -54,7 +54,7 @@ class Local {
 
 }
 
-class Local {
+class User {
 
 	protected $data = array(
 		'id' => 2,
@@ -86,7 +86,7 @@ With an Active Record object, business logic and data access logic are contained
 A basic Active Record object would look like so:
 
 ```php
-class Model_Local extends ORM
+class Model_User extends ORM
 {
 	// Note that aliases which are stored in another table cannot be fetched yet
 }
@@ -95,7 +95,7 @@ class Model_Local extends ORM
 And would be accessed like so:
 
 ```php
-$local = ORM::find('local', 1);
+$local = ORM::find('User', 1);
 
 // echo's Bobby Mcintire to the screen
 echo $local->name;
@@ -124,7 +124,6 @@ you tackle the complexity upfront. When developing Kacela, the following were ju
 3. Execute git submodule init
 4. Execute git submodule update
 5. Under application/classes, add two new directories: model, mapper
-
 
 ## Configuration
 
@@ -199,6 +198,12 @@ return array
 	'profiling' => false
 );
 ```
+
+## Data Source Setup
+
+### MySQL
+
+The default for Kacela is to name the database tables in the plural form (users, aliases,
 
 # Basic Usage
 
