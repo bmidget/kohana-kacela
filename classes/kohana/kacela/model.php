@@ -227,7 +227,7 @@ abstract class Kohana_Kacela_Model extends M\Model
 
 		if(!empty($rules))
 		{
-			$_validation = Validation::factory($this->_data)
+			$_validation = Validation::factory((array) $this->_data)
 				->bind(':model', $this)
 				->bind(':original_values', $this->_originalData)
 				->bind(':changed', $this->_changed);
