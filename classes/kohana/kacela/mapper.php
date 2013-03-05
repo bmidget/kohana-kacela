@@ -71,7 +71,7 @@ abstract class Kohana_Kacela_Mapper extends M\Mapper
 	 * @param Gacela\DataSource\Resource $resource
 	 * @return PDOStatement
 	 */
-	protected function _runQuery($query, $args = null, Kacela_DataSource_Resource $resource = null)
+	protected function _runQuery($query, $args = null, \Gacela\DataSource\Resource $resource = null)
 	{
 		$token = $this->_start_profile();
 		$return = parent::_runQuery($query, $args, $resource);

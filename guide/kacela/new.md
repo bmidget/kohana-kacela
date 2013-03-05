@@ -6,17 +6,15 @@ When using object-oriented PHP, that same data is stored, modified and accessed 
 Let's assume that you were creating your own internal database of local hoodlums to call when you're in a pinch. We'll assume that these locals can be reached by phone or email.
 When calling you'll need to know what other names they might be known as so you can be sure to find them.
 
-Storing the data in a hierarchal format with XML is fairly straightforward. Each 'local' is represented by a node named 'local' with a child 'aliases' node to contain the local's aliases.
+Storing the data in a hierarchical format with XML is fairly straightforward. Each 'user' is represented by a node named 'user' with a child 'contents' node to contain the user's blog posts.
 ```xml
 <xml version="1.0>
-	<user id="1" name="Bobby Mcintire" email="bobby@kacela.com" phone="1234567891" />
-	<user id="2" name="Frankfurt McGee" email="sweetcheeks@kacela.com" phone="9876543214">
-		<aliases>
-			<alias>Sweetcheeks McGee</alias>
-			<alias>Cryin' McGee</alias>
-			<alias>Hot Dog</alias>
-		</aliases>
-	</local>
+	<user id="1" first="Bobby" last="Mcintire" email="bobby@kacela.com" />
+	<user id="2" first="Frankfurt" last="McGee" email="sweetcheeks@kacela.com">
+		<contents>
+			<content></content>
+		</contents>
+	</user>
 </xml>
 ```
 
@@ -29,13 +27,6 @@ With a relational database, we would create two tables, one to hold the basic in
 | 1  | Bobby Mcintire  | bobby@kacela.com         | 1234567891   |
 | 2  | Frankfurt McGee | sweetcheeks@kacela.com   | 9876543214   |
 
-'aliases' table
-
-| id | alias                |
-|----|----------------------|
-| 2  | Sweetcheeks McGee    |
-| 2  | Cryin' McGee         |
-| 2  | Hot Dog              |
 
 
 The same data in PHP would be stored in classes like so:
@@ -50,7 +41,7 @@ class User {
 		'phone' => '1234567891'
 	);
 
-	protected $aliases = array();
+	protected $contents = array();
 
 }
 
@@ -63,10 +54,8 @@ class User {
 		'phone' => '9876543214'
 	);
 
-	protected $aliases = array(
-		'Sweetcheeks McGee',
-		'Cryin' McGee',
-		'Hot Dog'
+	protected $contents = array(
+
 	);
 
 }

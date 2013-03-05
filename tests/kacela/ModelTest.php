@@ -1,12 +1,9 @@
 <?php
 /**
- * Created by JetBrains PhpStorm.
- * User: noah
- * Date: 10/5/12
- * Time: 9:27 PM
- * To change this template use File | Settings | File Templates.
+ * @author noah
+ * @date 10/5/12
  */
-class ModelTest extends Unittest_TestCase
+class ModelTest extends Kacela_Unittest_Database_TestCase
 {
 	protected $model = null;
 
@@ -17,8 +14,19 @@ class ModelTest extends Unittest_TestCase
 		$this->model = new Model_House(Kacela::instance(), Kacela::load('house'));
 	}
 
-	public function test_get_form()
+	/**
+	 * Returns the test dataset.
+	 *
+	 * @return PHPUnit_Extensions_Database_DataSet_IDataSet
+	 */
+	protected function getDataSet()
+	{
+		return $this->createArrayDataSet(array());
+	}
+
+	public function testGetForm()
 	{
 		$this->assertInstanceOf('Formo_Form', $this->model->get_form());
 	}
+
 }

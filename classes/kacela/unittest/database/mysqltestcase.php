@@ -6,9 +6,9 @@ abstract class Kacela_Unittest_Database_MySqlTestCase extends \Kacela_Unittest_D
 
 	public static function setUpBeforeClass()
 	{
-		$gacela = \Gacela::instance();
+		$gacela = Kacela::instance();
 
-		$source = \Gacela::createDataSource(
+		$source = Kacela::createDataSource(
 			array(
 				'type' => 'mysql',
 				'name' => 'db',
@@ -19,7 +19,7 @@ abstract class Kacela_Unittest_Database_MySqlTestCase extends \Kacela_Unittest_D
 			)
 		);
 
-		$test = \Gacela::createDataSource(
+		$test = Kacela::createDataSource(
 			array(
 				'type' => 'mysql',
 				'name' => 'test',
@@ -40,7 +40,7 @@ abstract class Kacela_Unittest_Database_MySqlTestCase extends \Kacela_Unittest_D
 
 	public function getConnection()
 	{
-		$test = \Gacela::instance()->getDataSource('test');
+		$test = Kacela::instance()->getDataSource('test');
 
 		$test->loadResource('peeps');
 
