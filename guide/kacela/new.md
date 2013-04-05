@@ -18,7 +18,7 @@ Storing the data in a hierarchical format with XML is fairly straightforward. Ea
 </xml>
 ```
 
-With a relational database, we would create two tables, one to hold the basic information about each local, and a table to hold their aliases.
+With a relational database, we would create two tables, one to hold the basic information about each user, and a table to hold their posts.
 
 'users' table
 
@@ -26,8 +26,6 @@ With a relational database, we would create two tables, one to hold the basic in
 |-----|----------------|--------------------------|--------------|
 | 1  | Bobby Mcintire  | bobby@kacela.com         | 1234567891   |
 | 2  | Frankfurt McGee | sweetcheeks@kacela.com   | 9876543214   |
-
-
 
 The same data in PHP would be stored in classes like so:
 
@@ -84,25 +82,23 @@ class Model_User extends ORM
 And would be accessed like so:
 
 ```php
-$local = ORM::find('User', 1);
+$user = ORM::find('User', 1);
 
 // echo's Bobby Mcintire to the screen
-echo $local->name;
+echo $user->name;
 
-$local->phone = '9875412356'
+$user->phone = '9875412356'
 
-$local->save();
+$user->save();
 ```
 
 # Kacela's Basic Philosophies
 
-Working with a Data Mapper for the first time can be quite a bit more difficult than working with a more basic approach like Active Record, but Kacela offers large dividends if
-you tackle the complexity upfront. When developing Kacela, the following were just the top features we thought every ORM should have:
+Working with a Data Mapper for the first time can be quite a bit more difficult than working with a more basic approach like Active Record, but Kacela offers large dividends if you tackle the complexity upfront. When developing Kacela, the following were just the top features we thought every ORM should have:
 
 - Automatically discover relationships between objects and rules about the data contained within objects.
 - Separate data store activities from business logic activities so that our classes have a single responsibility.
 - Defaults that are easy to set up and use, but can handle complex mapping between business objects and the underlying data store.
-
 
 # Installation and Configuration
 
@@ -198,33 +194,37 @@ The default for Kacela is to name the database tables in the plural form (users,
 
 With Kacela installed I would create the following files:
 
-APPATH/classes/mapper/local.php
+APPATH/classes/mapper/user.php
 
 ```php
-class Mapper_Local extends Kacela_Mapper {}
+class Mapper_User extends Kacela_Mapper {}
 ```
 
-APPATH/classes/model/local.php
+APPATH/classes/model/user.php
 
 ```php
-class Model_Local extends Kacela_Model {}
+class Model_User extends Kacela_Model {}
 ```
 
 Now, I can load and manipulate a basic model:
 
 ```php
-$local = Kacela::factory('local', 1);
+$user = Kacela::factory('user', 1);
 
 // echos Bobby Mcintire to the screen
-echo $local->name;
+echo $user->name;
 
-$local->phone = '9875412356'
+$user->phone = '9875412356'
 
 // Saves the updated record to the database
-$local->save();
+$user->save();
 ```
 
-"But wait! This looks EXACTLY like Kohana_ORM, where's the benefit in creating two files where I only created one before?"
+Right now you're probably thinking, "Wait! This looks EXACTLY like Kohana_ORM, where's the benefit in creating two files where I only created one before?" 
+
+So far all we've looked at is the most basic scenario - one database table with a mapper that presents simple, default find() and findAll() methods with a Model that doesn't have any custom business logic.
+
+We'll explore custom Mapper functions first.
 
 # Fetching Data using Mappers
 
